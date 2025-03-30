@@ -1,6 +1,6 @@
 # ⚽ AI-Based Football Analyzer
 
-![Football Analysis](https://your-image-url.com/football_banner.png)
+![Football Analysis](images/D78C301A-A149-4957-8C3D-3C1A17404ECD.jpg)
 
 ## 📌 Overview
 
@@ -146,7 +146,7 @@ football-analyzer/
 
 ## 🎯 Conclusion
 
-By following this structured plan, you’ll build a **robust, scalable, and community-driven** AI-based football analyzer. 🚀⚽
+By following this structured plan, you'll build a **robust, scalable, and community-driven** AI-based football analyzer. 🚀⚽
 
 > **"Success in football and AI depends on strategy, precision, and execution."** 💡
 
