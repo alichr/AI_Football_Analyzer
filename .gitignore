@@ -38,8 +38,3 @@ wheels/
 
 # Logs
 *.log 
-
-# Jupyter Notebook
-.ipynb_checkpoints
-*.ipynb
-notebooks/
