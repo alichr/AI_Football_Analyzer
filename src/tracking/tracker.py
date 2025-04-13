@@ -1,35 +1,59 @@
-from deep_sort_realtime.deepsort_tracker import DeepSort
-import numpy as np
+from ultralytics import YOLO
+import torch
 
-class DeepSortTracker:
-    def __init__(self):
-        self.tracker = DeepSort(max_age=30, n_init=3)
+class YoloTracker:
+    def __init__(self, model_path='yolov8n.pt', device=None, img_size=640):
+        self.model = YOLO(model_path)
+        self.device = device or ('cuda' if torch.cuda.is_available() else 'cpu')
+        self.img_size = img_size
 
-    def update(self, frame, detections):
+    def detect(self, image_tensor):
         """
-        frame: Original image (BGR) as numpy array [H, W, 3]
-        detections: list of [x1, y1, x2, y2, conf] from YOLO
-        returns: list of tracked objects with ID and bbox
+        image_tensor: torch.Tensor of shape [1, 3, H, W], normalized [0, 1]
         """
-        if len(detections) == 0:
-            return []
-
-        bbox_xywh = []
-        confidences = []
-
-        for det in detections:
-            x1, y1, x2, y2, conf = det
-            w, h = x2 - x1, y2 - y1
-            bbox_xywh.append([x1 + w/2, y1 + h/2, w, h])
-            confidences.append(conf)
-
-        tracks = self.tracker.update_tracks(bbox_xywh, confidences, frame=frame)
-
-        results = []
-        for track in tracks:
-            if not track.is_confirmed():
-                continue
-            track_id = track.track_id
-            l, t, w, h = track.to_ltrb()
-            results.append([l, t, l + w, t + h, track_id])
+        # model.predict handles device internally
+        results = self.model.predict(image_tensor, imgsz=self.img_size, verbose=False, device=self.device)
         return results
+        
+    def track(self, image_tensor, conf=0.5, tracker="bytetrack.yaml", persist=True):
+        """
+        Track objects in a sequence of frames
+        
+        Args:
+            image_tensor: torch.Tensor of shape [1, 3, H, W], normalized [0, 1]
+            conf: Confidence threshold for detection
+            tracker: Tracker to use ("bytetrack.yaml", "botsort.yaml", etc.)
+            persist: Whether to persist tracks between frames
+            
+        Returns:
+            Results object from YOLO model with tracking information
+        """
+        results = self.model.track(
+            image_tensor, 
+            imgsz=self.img_size, 
+            conf=conf, 
+            device=self.device, 
+            tracker=tracker, 
+            persist=persist,
+            verbose=False
+        )
+        return results
+
+if __name__ == "__main__":
+    # Example usage
+    detector = YoloTracker(model_path='checkpoint/yolo11n.pt', img_size=640)
+    dummy_tensor = torch.randn(1, 3, 640, 640)  # Dummy tensor for testing
+    results = detector.detect(dummy_tensor)
+    
+    for result in results:
+        print(result)
+        # Process the detection results as needed
+        
+    # Tracking example
+    tracking_results = detector.track(dummy_tensor, conf=0.5)
+    
+    for result in tracking_results:
+        print(result)
+        if hasattr(result.boxes, 'id') and result.boxes.id is not None:
+            print(f"Track IDs: {result.boxes.id.int().cpu().tolist()}")
+        # Process the tracking results as needed

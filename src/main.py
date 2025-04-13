@@ -1,9 +1,13 @@
 import torch
 import cv2
-from data_pipeline.video_pipeline import Preprocessor, VideoDataset
-from detection.detector import YoloDetector
-from tracking.tracker import DeepSortTracker  # Updated to use DeepSORT
+import numpy as np
+import datetime
+from data_pipeline.video_preprocessor import Preprocessor, VideoDataset
+from tracking.tracker import YoloTracker
 
+# Constants
+CONFIDENCE_THRESHOLD = 0.5
+RED = (0, 0, 255)
 
 def main():
     # Initialize video path and model parameters
@@ -15,44 +19,39 @@ def main():
     preprocessor = Preprocessor(img_size=img_size)
     dataset = VideoDataset(video_path, preprocessor)
 
-    # Initialize YOLO detector and DeepSORT tracker
-    detector = YoloDetector(model_path=model_path, img_size=img_size)
-    tracker = DeepSortTracker()
+    # Get video frame rate
+    cap = cv2.VideoCapture(video_path)
+    fps = cap.get(cv2.CAP_PROP_FPS)
+    cap.release()
+
+    # Initialize YOLO detector and player tracker
+    model = YoloTracker(model_path=model_path, img_size=img_size)
 
     # Process video frames
     for i, processed_frame in enumerate(dataset):
+        start = datetime.datetime.now()
+        
+        # Detection
         tensor = torch.from_numpy(processed_frame).unsqueeze(0)  # [1, 3, H, W]
-        print(f"Frame {i} - Shape: {tensor.shape}, dtype: {tensor.dtype}")
+        results = model.track(tensor, conf=CONFIDENCE_THRESHOLD, persist=True, tracker="bytetrack.yaml")
 
-        # Perform detection
-        results = detector.detect(tensor)
-        result = results[0]
+        tracked_frame = results[0].plot()
+        
+        # Calculate and display FPS
+        end = datetime.datetime.now()
+        fps_text = f"FPS: {1 / (end - start).total_seconds():.2f}"
+        cv2.putText(tracked_frame, fps_text, (50, 50),
+                    cv2.FONT_HERSHEY_SIMPLEX, 1, RED, 2)
+        
+        # Show frame
+        cv2.imshow('YOLO Tracking with Data Pipeline', tracked_frame)
 
-        # Extract detection boxes: [x1, y1, x2, y2, conf]
-        detections = []
-        for box in result.boxes:
-            xyxy = box.xyxy[0].cpu().numpy()
-            conf = box.conf[0].cpu().item()
-            detections.append([*xyxy, conf])
-
-        # Convert frame to BGR for DeepSORT
-        original_frame_bgr = cv2.cvtColor(processed_frame, cv2.COLOR_RGB2BGR)
-
-        # Perform tracking
-        tracked_objects = tracker.update(original_frame_bgr, detections)
-
-        # Draw tracked objects
-        for obj in tracked_objects:
-            x1, y1, x2, y2, track_id = map(int, obj)
-            cv2.rectangle(original_frame_bgr, (x1, y1), (x2, y2), (0, 255, 0), 2)
-            cv2.putText(original_frame_bgr, f'ID {track_id}', (x1, y1 - 10),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1)
-
-        # Display the frame
-        cv2.imshow("Tracked", original_frame_bgr)
-        cv2.waitKey(5)
-
-        if i == 500:
+      
+        
+        if cv2.waitKey(1) == ord('q'):
+            break
+            
+        if i == 500:  # Limit to 500 frames for testing
             break
 
     cv2.destroyAllWindows()
