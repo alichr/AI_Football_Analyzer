@@ -97,7 +97,7 @@ football-analyzer/
    - Annotate players/ball using **Label Studio** (COCO/YOLO format).
 
 ✅ **Detection Model**
-   - Fine-tune **YOLOv8** on annotated data.
+   - Fine-tune **YOLOv11** on annotated data.
    - Optimize inference with **ONNX/TensorRT**.
 
 ✅ **Tracking**
