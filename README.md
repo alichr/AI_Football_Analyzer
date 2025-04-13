@@ -76,7 +76,7 @@ football-analyzer/
 ├── notebooks/              # EDA, prototyping (detection, tracking, analysis)
 ├── src/
 │   ├── data_pipeline/      # Video ingestion, preprocessing
-│   ├── archive/            # unsed codes
+│   ├── archive/            # Unsed codes
 │   ├── tracking/           # Yolo & Bytetrack integration
 │   ├── analysis/           # Strategy algorithms
 │   ├── api/                # FastAPI backend
