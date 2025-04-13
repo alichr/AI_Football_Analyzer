@@ -21,7 +21,7 @@ For detailed flow diagrams of each system component, please visit [System Archit
 
 2. **🎯 Detection & Tracking**
    - **YOLOv8**: Player/ball detection
-   - **DeepSORT**: Multi-object tracking
+   - **ByteTrack**: Multi-object tracking
    - **Trajectory Extraction**
 
 3. **📊 Strategy Analysis**
