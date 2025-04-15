@@ -39,6 +39,13 @@ wheels/
 # Logs
 *.log 
 
+# data
+data/processed/
+
 
 # models
 checkpoint/
+yolo11n.pt
+yolo11x.pt
+
+

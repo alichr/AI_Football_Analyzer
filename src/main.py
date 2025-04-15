@@ -12,7 +12,7 @@ RED = (0, 0, 255)
 def main():
     # Initialize video path and model parameters
     video_path = "../data/raw/videos/sample.mp4"
-    model_path = "../checkpoint/yolo11n.pt"
+    model_path = "../checkpoint/yolo11_football_20250415_1837222/weights/best.pt"
     img_size = 640
 
     # Initialize preprocessor and dataset
