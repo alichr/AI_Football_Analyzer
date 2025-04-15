@@ -21,7 +21,7 @@ For detailed flow diagrams of each system component, please visit [System Archit
 
 2. **🎯 Detection & Tracking**
    - **YOLOv8**: Player/ball detection
-   - **DeepSORT**: Multi-object tracking
+   - **ByteTrack**: Multi-object tracking
    - **Trajectory Extraction**
 
 3. **📊 Strategy Analysis**
@@ -54,15 +54,16 @@ For detailed flow diagrams of each system component, please visit [System Archit
 
 ## 📅 Timeline & Milestones
 
-| **Phase** | **Duration** | **Milestones** |
-|----------|------------|-----------------|
-| **📌 System Design** | 2 weeks | Architecture diagram, tool selection, dataset sourcing plan |
-| **📥 Data Pipeline** | 3 weeks | Video ingestion, preprocessing, annotation (200+ labeled videos) |
-| **🎯 Detection & Tracking** | 4 weeks | YOLOv8 model (mAP ≥80%), DeepSORT (MOTA ≥70%) |
-| **📊 Strategy Analysis** | 3 weeks | Heatmaps, passing accuracy (≥85% F1-score), formation detection |
-| **🖥️ API & Web App** | 3 weeks | Functional API endpoints, interactive dashboard |
-| **🚀 MLOps & Deployment** | 2 weeks | CI/CD pipeline, model monitoring, Dockerized deployment |
-| **📚 Documentation** | Ongoing | Tutorials, API docs, contribution guidelines |
+| **Phase** | **Duration** | **Milestones** | **Status** |
+|----------|------------|-----------------|------------|
+| **📌 System Design** | 2 weeks | Architecture diagram, tool selection, dataset sourcing plan | ✅ |
+| **📥 Data Pipeline** | 3 weeks | Video ingestion, preprocessing, annotation (200+ labeled videos) | ✅ |
+| **🎯 Detection & Tracking** | 4 weeks | YOLOv8 model (mAP ≥80%), DeepSORT (MOTA ≥70%) | ✅ |
+| **📊 Strategy Analysis** | 3 weeks | Heatmaps, passing accuracy (≥85% F1-score), formation detection | ❌ |
+| **🖥️ API & Web App** | 3 weeks | Functional API endpoints, interactive dashboard | ❌ |
+| **🚀 MLOps & Deployment** | 2 weeks | CI/CD pipeline, model monitoring, Dockerized deployment | ❌ |
+| **📚 Documentation** | Ongoing | Tutorials, API docs, contribution guidelines | ✅ |
+
 
 ---
 
@@ -75,8 +76,8 @@ football-analyzer/
 ├── notebooks/              # EDA, prototyping (detection, tracking, analysis)
 ├── src/
 │   ├── data_pipeline/      # Video ingestion, preprocessing
-│   ├── detection/          # YOLO training/evaluation
-│   ├── tracking/           # DeepSORT integration
+│   ├── archive/            # Unsed codes
+│   ├── tracking/           # Yolo & Bytetrack integration
 │   ├── analysis/           # Strategy algorithms
 │   ├── api/                # FastAPI backend
 │   └── webapp/             # Streamlit/React frontend
@@ -96,7 +97,7 @@ football-analyzer/
    - Annotate players/ball using **Label Studio** (COCO/YOLO format).
 
 ✅ **Detection Model**
-   - Fine-tune **YOLOv8** on annotated data.
+   - Fine-tune **YOLOv11** on annotated data.
    - Optimize inference with **ONNX/TensorRT**.
 
 ✅ **Tracking**
